@@ -1,16 +1,36 @@
 import React, { Component } from "react";
 import propTypes from "prop-types";
 import style from "./Searchbar.module.css";
+import { ImSearch } from "react-icons/im";
+import { toast } from "react-toastify";
 
 export default class Searchbar extends Component {
-  onSubmit = (evt) => {};
+  state = {
+    imageName: "",
+  };
+
+  handleNameChange = (evt) => {
+    console.log(evt);
+    this.setState({ imageName: evt.currentTarget.value.toLowerCase() });
+  };
+
+  handleSubmit = (evt) => {
+    evt.preventDefault();
+
+    if (this.state.imageName.trim() === "") {
+      return toast.warn("Please enter the picture name!");
+    }
+
+    this.props.onSubmit(this.state.imageName);
+    this.setState({ imageName: "" });
+  };
 
   render() {
     return (
       <header className={style.Searchbar}>
-        <form className={style.SearchForm}>
+        <form onSubmit={this.handleSubmit} className={style.SearchForm}>
           <button type="submit" className={style.SearchForm_button}>
-            <span className={style.SearchForm_button_label}>Search</span>
+            <ImSearch />
           </button>
 
           <input
@@ -19,6 +39,8 @@ export default class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
+            value={this.state.imageName}
+            onChange={this.handleNameChange}
           />
         </form>
       </header>

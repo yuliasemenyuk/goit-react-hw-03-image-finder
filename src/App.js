@@ -6,6 +6,7 @@ import "./App.css";
 
 class App extends Component {
   state = {
+    imageName: "",
     showModal: false,
     images: null,
     // loading: false,
@@ -21,6 +22,10 @@ class App extends Component {
       .then((images) => this.setState({ images }));
   }
 
+  handleFormSubmit = (imageName) => {
+    this.setState({ imageName });
+  };
+
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
@@ -32,7 +37,7 @@ class App extends Component {
 
     return (
       <div>
-        <Searchbar />
+        <Searchbar onSubmit={this.handleFormSubmit} />
         {images && <>gallery will be here</>}
         {loading && <Loader />}
         {showModal && (
