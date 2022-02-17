@@ -1,50 +1,80 @@
 import React, { Component } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import Searchbar from "./components/Searchbar/Searchbar";
-import Modal from "./components/Modal/Modal";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import Button from "./components/Button/Button";
 import Loader from "./components/Loader/Loader";
-import "./App.css";
+import getAPI from "./services/API";
+import style from "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 
 class App extends Component {
   state = {
     imageName: "",
-    showModal: false,
-    images: null,
-    // loading: false,
+    images: [],
+    loading: false,
+    page: 1,
   };
 
-  componentDidMount() {
-    // this.setState({loading: true});
+  searchImages = () => {
+    const { imageName, page } = this.state;
+    this.setState({ loading: true });
 
-    fetch(
-      "https://pixabay.com/api/?key=4549161-d9016794db06e42eaadc07c38/&q=flovers"
-    )
-      .then((res) => res.json())
-      .then((images) => this.setState({ images }));
+    getAPI(imageName, page).then((res) => {
+      const images = res.data.hits.map(
+        ({ id, tags, webformatURL, largeImageURL }) => {
+          return { id, tags, webformatURL, largeImageURL };
+        }
+      );
+
+      if (images.length === 0) {
+        this.setState({ loading: false });
+        return toast.error("There is no picture with that name!");
+      }
+
+      this.setState((prevState) => ({
+        images: [...prevState.images, ...images],
+      }));
+      this.setState({ loading: false });
+    });
+  };
+
+  componentDidUpdate(prewProps, prevState) {
+    if (prevState.imageName !== this.state.imageName) {
+      this.setState({ images: [] });
+      this.searchImages();
+    }
+
+    if (prevState.page !== this.state.page && this.state.page !== 1) {
+      this.searchImages();
+    }
   }
 
   handleFormSubmit = (imageName) => {
     this.setState({ imageName });
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
+  loadMoreBtn = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
     }));
   };
 
   render() {
-    const { showModal, images, loading } = this.state;
+    const { images, loading } = this.state;
+    const { handleFormSubmit, loadMoreBtn } = this;
 
     return (
-      <div>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-        {images && <>gallery will be here</>}
-        {loading && <Loader />}
-        {showModal && (
-          <Modal onClose={this.toggleModal}>
-            <img src="" alt="" />
-          </Modal>
+      <div className={style.App}>
+        <Searchbar onSubmit={handleFormSubmit} />
+        <ImageGallery images={images} />
+        {loading ? (
+          <Loader />
+        ) : (
+          images.length > 0 &&
+          images.length % 12 === 0 && <Button more={loadMoreBtn} />
         )}
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }

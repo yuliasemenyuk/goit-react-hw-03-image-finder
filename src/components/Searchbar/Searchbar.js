@@ -10,7 +10,6 @@ export default class Searchbar extends Component {
   };
 
   handleNameChange = (evt) => {
-    console.log(evt);
     this.setState({ imageName: evt.currentTarget.value.toLowerCase() });
   };
 
@@ -18,7 +17,8 @@ export default class Searchbar extends Component {
     evt.preventDefault();
 
     if (this.state.imageName.trim() === "") {
-      return toast.warn("Please enter the picture name!");
+      toast.error("Search field can`t be empty!");
+      return;
     }
 
     this.props.onSubmit(this.state.imageName);

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { createPortal } from "react-dom";
+import propTypes from "prop-types";
 import style from "./Modal.module.css";
 
 const modalRoot = document.querySelector("#modal-root");
@@ -25,16 +26,20 @@ export default class Modal extends Component {
     }
   };
 
-  // eslint-disable-next-line react/require-render-return
   render() {
+    const { largeImageURL, tags } = this.props;
+
     return createPortal(
       <div className={style.overlay} onClick={this.handleOverlayClick}>
         <div className={style.modal}>
-          {this.props.children}
-          <img src="" alt="" />
+          <img src={largeImageURL} alt={tags} />
         </div>
       </div>,
       modalRoot
     );
   }
 }
+
+Modal.propTypes = {
+  onClose: propTypes.func,
+};

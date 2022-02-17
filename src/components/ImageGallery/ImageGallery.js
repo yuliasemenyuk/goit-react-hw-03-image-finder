@@ -1,25 +1,33 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React from "react";
+import propTypes from "prop-types";
+import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
+import style from "./ImageGallery.module.css";
 
-axios.defaults.baseURL =
-  "https://pixabay.com/api/24549161-d9016794db06e42eaadc07c38";
-
-const ImageList = ({ images }) => (
-  <ul>
-    {/* {images.map(({ objectID, url, title }) => (
-        <li key={objectID}>
-          <a href={url} target="_blank" rel="noreferrer noopener">
-            {title}
-          </a>
-        </li>
-      ))} */}
-  </ul>
-);
-
-class ImageGallery extends Component {
-  state = {
-    images: [],
-  };
+export default function ImageGallery({ images }) {
+  return (
+    <ul className={style.ImageGallery}>
+      {images.length > 0 &&
+        images.map(({ id, webformatURL, largeImageURL, tags }) => {
+          return (
+            <ImageGalleryItem
+              key={id}
+              webformatURL={webformatURL}
+              largeImageURL={largeImageURL}
+              tags={tags}
+            />
+          );
+        })}
+    </ul>
+  );
 }
 
-export default ImageGallery;
+ImageGallery.propTypes = {
+  images: propTypes.arrayOf(
+    propTypes.shape({
+      id: propTypes.number.isRequired,
+      largeImageURL: propTypes.string.isRequired,
+      tags: propTypes.string.isRequired,
+      webformatURL: propTypes.string.isRequired,
+    })
+  ),
+};
