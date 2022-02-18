@@ -40,5 +40,7 @@ export default class ImageGalleryItem extends Component {
 }
 
 ImageGalleryItem.propTypes = {
-  toggleModal: propTypes.func,
+  largeImageURL: propTypes.string.isRequired,
+  webformatURL: propTypes.string.isRequired,
+  tags: propTypes.string.isRequired,
 };

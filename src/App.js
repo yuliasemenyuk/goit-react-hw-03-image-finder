@@ -41,7 +41,7 @@ class App extends Component {
 
   componentDidUpdate(prewProps, prevState) {
     if (prevState.imageName !== this.state.imageName) {
-      this.setState({ images: [] });
+      this.setState({ images: [], page: 1 });
       this.searchImages();
     }
 
@@ -67,7 +67,7 @@ class App extends Component {
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleFormSubmit} />
-        <ImageGallery images={images} />
+        {images.length > 0 && <ImageGallery images={images} />}
         {loading ? (
           <Loader />
         ) : (
