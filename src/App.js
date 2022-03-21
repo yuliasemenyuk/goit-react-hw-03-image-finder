@@ -41,7 +41,7 @@ class App extends Component {
 
   componentDidUpdate(prewProps, prevState) {
     if (prevState.imageName !== this.state.imageName) {
-      this.setState({ images: [], page: 1 });
+      this.setState({ images: [] });
       this.searchImages();
     }
 
@@ -51,7 +51,7 @@ class App extends Component {
   }
 
   handleFormSubmit = (imageName) => {
-    this.setState({ imageName });
+    this.setState({ imageName, page: 1, images: [] });
   };
 
   loadMoreBtn = () => {
